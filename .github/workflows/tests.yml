@@ -60,7 +60,8 @@ jobs:
           fi
 
           space_after=$(df -k "$GITHUB_WORKSPACE" | awk 'NR == 2 {print $4}')
-          awk -v before="$space_before" -v after="$space_after" 'BEGIN { printf "Increase in available disk space: %.2f GiB\n", (after - before) / 1048576 }'
+          increase=$(awk -v b="$space_before" -v a="$space_after" 'BEGIN { printf "%.2f", (a - b) / 1048576 }')
+          echo "Increase in available disk space: $increase GiB"
 
       - name: Check disk space (after)
         run: |
