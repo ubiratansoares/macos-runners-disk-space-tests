@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  rust-build:
+  clean-up:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
