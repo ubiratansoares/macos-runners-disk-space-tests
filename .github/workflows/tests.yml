@@ -24,6 +24,12 @@ jobs:
         run: |
             df -h
 
+      - name: Show command helpers
+        run: |
+          xcrun simctl help
+          xcrun simctl help delete
+          xcrun simctl help runtime
+
       - name: Check iOS simulators
         run: |
           xcrun simctl list devices
@@ -54,7 +60,7 @@ jobs:
           fi
 
           space_after=$(df -k "$GITHUB_WORKSPACE" | awk 'NR == 2 {print $4}')
-          echo "Increase in available disk space: $((space_after - space_before)) KiB"
+          awk -v before="$space_before" -v after="$space_after" 'BEGIN { printf "Increase in available disk space: %.2f GiB\n", (after - before) / 1048576 }'
 
       - name: Check disk space (after)
         run: |
