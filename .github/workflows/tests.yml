@@ -21,7 +21,9 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Check disk space (before)
-        run: df -k "$GITHUB_WORKSPACE"
+        run: |
+            df -k "$GITHUB_WORKSPACE"
+            df -h
 
       - name: Check iOS simulators
         run: |
@@ -50,4 +52,6 @@ jobs:
           fi
 
       - name: Check disk space (after)
-        run: df -k "$GITHUB_WORKSPACE"
+        run: |
+            df -k "$GITHUB_WORKSPACE"
+            df -h
