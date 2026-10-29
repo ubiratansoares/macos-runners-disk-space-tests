@@ -21,13 +21,18 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Check disk space (before)
-        run: df -h
+        run: df -k "$GITHUB_WORKSPACE"
+
+      - name: Check iOS simulators
+        run: |
+          xcrun simctl list devices
+          xcrun simctl runtime list
 
       - name: Remove iOS simulators
         run: |
-          echo '*** Delete iOS simulators'
+          xcrun simctl shutdown all
           xcrun simctl delete all
           sudo rm -rf ~/Library/Developer/CoreSimulator/Caches/*
 
       - name: Check disk space (after)
-        run: df -h
+        run: df -k "$GITHUB_WORKSPACE"
