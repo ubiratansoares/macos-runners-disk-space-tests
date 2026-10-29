@@ -22,7 +22,6 @@ jobs:
 
       - name: Check disk space (before)
         run: |
-            df -k "$GITHUB_WORKSPACE"
             df -h
 
       - name: Check iOS simulators
@@ -32,6 +31,9 @@ jobs:
 
       - name: Remove iOS simulators
         run: |
+
+          space_before=$(df -k "$GITHUB_WORKSPACE" | awk 'NR == 2 {print $4}')
+
           xcrun simctl shutdown all
           xcrun simctl delete all
           xcrun simctl runtime delete all
@@ -51,7 +53,9 @@ jobs:
             echo "::warning::Runtime deletion did not finish within the polling period."
           fi
 
+          space_after=$(df -k "$GITHUB_WORKSPACE" | awk 'NR == 2 {print $4}')
+          echo "Increase in available disk space: $((space_after - space_before)) KiB"
+
       - name: Check disk space (after)
         run: |
-            df -k "$GITHUB_WORKSPACE"
             df -h
