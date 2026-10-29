@@ -32,7 +32,22 @@ jobs:
         run: |
           xcrun simctl shutdown all
           xcrun simctl delete all
-          sudo rm -rf ~/Library/Developer/CoreSimulator/Caches/*
+          xcrun simctl runtime delete all
+
+          # Runtime deletion is asynchronous; wait up to about 60 seconds.
+          for ((attempt = 0; attempt < 30; attempt++)); do
+            remaining=$(xcrun simctl runtime list -j | jq 'length')
+            echo "Runtime images remaining: $remaining"
+
+            if [[ "$remaining" == 0 ]]; then
+              break
+            fi
+            sleep 2
+          done
+
+          if [[ "$remaining" != 0 ]]; then
+            echo "::warning::Runtime deletion did not finish within the polling period."
+          fi
 
       - name: Check disk space (after)
         run: df -k "$GITHUB_WORKSPACE"
